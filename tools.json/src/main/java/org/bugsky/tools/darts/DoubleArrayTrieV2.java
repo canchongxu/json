@@ -290,6 +290,7 @@ public class DoubleArrayTrieV2 {
 		progress = 0;
 
 		resize(65536 * 32);
+		//resize(100);
 
 		base[0] = 1;
 		nextCheckPos = 0;
@@ -302,12 +303,15 @@ public class DoubleArrayTrieV2 {
 		List<Node> siblings = new ArrayList<Node>();
 		//这里先把第一层的节点都生成了，然后在insert中递归构建其它子树
 		fetch(root_node, siblings);
+		/*
 		for(Node node: siblings)
 		{
 			System.out.println((char)(node.code-1) + "\t" + node.depth + "\t" + node.left + "\t" + node.right);
 		}
+		*/
 		insert(siblings);
 		
+		/*
         for(int it: map.keySet())
         {
         	List<Node> list = map.get(it);
@@ -316,7 +320,8 @@ public class DoubleArrayTrieV2 {
         		System.out.println(node.depth + "##" + (char)(node.code-1) + ":" + (node.left+1) + "--" + (node.right+1));
         	}
         	System.out.println("-----------");
-        }		
+        }
+        */		
 
 		// size += (1 << 8 * 2) + 1; // ???
 		// if (size >= allocSize) resize (size);
@@ -551,5 +556,7 @@ public class DoubleArrayTrieV2 {
         {
             System.out.println(words.get(index));
         }
+        
+        //dat.dump();
 	}
 }
