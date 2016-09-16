@@ -47,6 +47,15 @@ public class DoubleArrayTrieV2 {
 		int left;
 		int right;
 	};
+	private Map<Integer, List<Node>> map = new HashMap<Integer, List<Node>>();
+
+	public Map<Integer, List<Node>> getMap() {
+		return map;
+	}
+
+	public void setMap(Map<Integer, List<Node>> map) {
+		this.map = map;
+	}
 
 	private int check[];
 	private int base[];
@@ -209,6 +218,7 @@ public class DoubleArrayTrieV2 {
 			} else {
 				int h = insert(new_siblings);
 				base[begin + siblings.get(i).code] = h;
+				map.put(begin + siblings.get(i).code, new_siblings);
 			}
 		}
 		return begin;
@@ -294,9 +304,19 @@ public class DoubleArrayTrieV2 {
 		fetch(root_node, siblings);
 		for(Node node: siblings)
 		{
-			System.out.println((char)node.code + "\t" + node.depth + "\t" + node.left + "\t" + node.right);
+			System.out.println((char)(node.code-1) + "\t" + node.depth + "\t" + node.left + "\t" + node.right);
 		}
 		insert(siblings);
+		
+        for(int it: map.keySet())
+        {
+        	List<Node> list = map.get(it);
+        	for(Node node : list)
+        	{
+        		System.out.println(node.depth + "##" + (char)(node.code-1) + ":" + (node.left+1) + "--" + (node.right+1));
+        	}
+        	System.out.println("-----------");
+        }		
 
 		// size += (1 << 8 * 2) + 1; // ???
 		// if (size >= allocSize) resize (size);
@@ -438,8 +458,7 @@ public class DoubleArrayTrieV2 {
 		int b = base[nodePos];
 		int n;
 		int p=0;
-
-		int i=pos;
+		int i = pos;
 		for (; i < len; i++) {
 			p = b;
 			n = base[p];
@@ -450,13 +469,23 @@ public class DoubleArrayTrieV2 {
 			else
 				return result;
 		}
-		if(i>=len)
-			result.add(base[p]);
 		
+		if(i>=len)
+		{
+			List<Node> toSearch = map.get(p);
+			for(Node node: toSearch)
+			{
+				for(int j=node.left; j<node.right; j++)
+				{
+					result.add(j);
+				}
+			}
+		}		
+
 		p = b;
 		n = base[p];
-
-		if (n < 0) {
+		
+		if (b == check[p] && n < 0) {
 			result.add(-n - 1);
 		}
 
@@ -511,8 +540,12 @@ public class DoubleArrayTrieV2 {
         Collections.sort(words);
         DoubleArrayTrieV2 dat = new DoubleArrayTrieV2();
         System.out.println("build过程是否正常: " + dat.build(words));
+        Map<Integer, List<Node>> map = dat.getMap();
+        System.out.println("map size :" + map.size());
+        System.out.println("dat size :" + dat.getSize());
+        System.out.println("dat nozerosize :" + dat.getNonzeroSize());
         
-        String key = "sd";
+        String key = "t";
         List<Integer> integerList = dat.myPrefixSearch(key);
         for (int index : integerList)
         {
